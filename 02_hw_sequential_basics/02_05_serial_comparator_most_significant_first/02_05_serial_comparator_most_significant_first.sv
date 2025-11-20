@@ -48,6 +48,32 @@ module serial_comparator_most_significant_first
   output a_greater_b
 );
 
+  logic is_a_greater_b;
+  logic is_a_less_b;
+  logic is_a_eq_b;
+
+  always_ff @ (negedge clk) begin
+    if (rst) begin
+      is_a_eq_b <= 1'b1;
+      is_a_greater_b <= 1'b0;
+      is_a_less_b <= 1'b0;
+    end else if (a_eq_b) begin
+      if (a > b) begin
+        is_a_greater_b <= 1'b1;
+        is_a_eq_b <= 1'b0;
+        is_a_less_b <= 1'b0;
+      end else if (a < b) begin
+        is_a_less_b <= 1'b1;
+        is_a_eq_b <= 1'b0;
+        is_a_greater_b <= 1'b0;
+      end
+    end
+  end
+
+  assign a_eq_b = is_a_eq_b;
+  assign a_less_b = is_a_less_b;
+  assign a_greater_b = is_a_greater_b;
+
   // Task:
   // Implement a module that compares two numbers in a serial manner.
   // The module inputs a and b are 1-bit digits of the numbers
@@ -57,6 +83,5 @@ module serial_comparator_most_significant_first
   // The module should also use the clk and rst inputs.
   //
   // See the testbench for the output format ($display task).
-
 
 endmodule

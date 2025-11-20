@@ -26,11 +26,19 @@ endmodule
 
 module one_cycle_pulse_detector (input clk, rst, a, output detected);
 
+  logic [1:0] current_seq; 
+  always_ff @ (posedge clk or posedge rst)
+    if (rst)
+      current_seq <= 2'd3;
+    else
+      current_seq <= {a, current_seq[1]};
+
+  assign detected = ~a & current_seq[1] & ~current_seq[0];
+
   // Task:
   // Create an one cycle pulse (010) detector.
   //
   // Note:
   // See the testbench for the output format ($display task).
-
 
 endmodule

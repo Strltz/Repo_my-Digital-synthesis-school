@@ -12,6 +12,28 @@ module serial_adder_with_vld
   input  last,
   output sum
 );
+  
+  logic c_high_bit;
+  logic sum_1;
+
+  always_comb begin
+    if (rst) begin
+      c_high_bit <= 1'b0;
+      sum_1 <= 1'b0;
+    end
+    else if (vld & ~last) begin
+      sum_1 <= c_high_bit ^ a ^ b;
+      c_high_bit <= (a & b) | ((a ^ b) & c_high_bit);
+    end
+    else if (vld & last) begin
+      sum_1 <= c_high_bit ^ a ^ b;
+      c_high_bit <= 1'b0;
+    end
+    else
+      sum_1 <= 1'b1;
+  end
+
+  assign sum = sum_1;
 
   // Task:
   // Implement a module that performs serial addition of two numbers
@@ -28,6 +50,5 @@ module serial_adder_with_vld
   // only if vld is also high, otherwise last should be ignored.
   //
   // When rst is high, the module should reset its internal state.
-
 
 endmodule

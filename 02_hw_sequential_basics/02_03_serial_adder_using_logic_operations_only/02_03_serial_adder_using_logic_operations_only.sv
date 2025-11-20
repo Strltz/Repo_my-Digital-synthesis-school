@@ -40,6 +40,17 @@ module serial_adder_using_logic_operations_only
   output sum
 );
 
+  logic c_high_bit;
+
+  always_ff @ (posedge clk) begin
+    if (rst)
+      c_high_bit = 1'b0;
+    else
+      c_high_bit <= (a & b) | (a ^ b) & c_high_bit;
+  end
+
+  assign sum = a ^ b ^ c_high_bit;
+
   // Task:
   // Implement a serial adder using only ^ (XOR), | (OR), & (AND), ~ (NOT) bitwise operations.
   //
@@ -49,6 +60,5 @@ module serial_adder_using_logic_operations_only
   // for information about the 1-bit full adder implementation.
   //
   // See the testbench for the output format ($display task).
-
 
 endmodule
